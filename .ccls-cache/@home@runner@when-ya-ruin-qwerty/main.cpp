@@ -1,8 +1,16 @@
 #include <iostream>
 #include <fstream>
 
-int main() {
-	std::string filename("main.qy");
+unsigned char* inc(unsigned char* p, unsigned char* m) {
+	if (p == m + 255) {
+		return m;
+	} else {
+		return p + 1;
+	}
+}
+
+int main(int argc, char* argv[]) {
+	std::string filename(argv[1]);
 
 	FILE* qy_file = fopen(filename.c_str(), "r");
 	if (qy_file == nullptr) {
@@ -75,13 +83,62 @@ int main() {
 				} else {
 					cur++;
 				}
+				break;
 			}
 			case '(': {
-				if (cur == (mems)) {
+				if (cur == mems) {
 					cur = mems + 255;
 				} else {
 					cur--;
 				}
+				break;
+			}
+			case '&': {//multi-digit WOW
+				unsigned char t = *cur;
+				unsigned char o = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(10 * t + o);
+				break;
+			}
+			case '+': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a + b);
+				break;
+			}
+			case '-': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a - b);
+				break;
+			}
+			case '*': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a * b);
+				break;
+			}
+			case '/': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a / b);
+				break;
+			}
+			case 'o': {
+				std::cout << *cur;
+				break;
+			}
+			case 'i': {
+				std::cin >> *cur;
+				break;
+			}
+			case '\n': {
+				std::fill(mems, mems + 255, 0);
+				break;
 			}
 		}
   }

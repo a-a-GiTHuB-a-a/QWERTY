@@ -1,6 +1,14 @@
 #include <iostream>
 #include <fstream>
 
+unsigned char* inc(unsigned char* p, unsigned char* m) {
+	if (p == m + 255) {
+		return m;
+	} else {
+		return p + 1;
+	}
+}
+
 int main(int argc, char* argv[]) {
 	std::string filename(argv[1]);
 
@@ -86,12 +94,38 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 			case '&': {//multi-digit WOW
-				if (cur != mems) {
-					unsigned char o = *cur;
-					*cur = 0;
-					unsigned char t = *(--cur);
-					*cur = (unsigned char)(10 * t + o);
-				}
+				unsigned char t = *cur;
+				unsigned char o = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(10 * t + o);
+				break;
+			}
+			case '+': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a + b);
+				break;
+			}
+			case '-': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a - b);
+				break;
+			}
+			case '*': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a * b);
+				break;
+			}
+			case '/': {
+				unsigned char a = *cur;
+				unsigned char b = *(inc(cur, mems));
+				*(inc(cur, mems)) = 0;
+				*cur = (unsigned char)(a / b);
 				break;
 			}
 			case 'o': {
